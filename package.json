@@ -1,0 +1,24 @@
+{
+  "name": "artwork-2020-01",
+  "version": "1.0.0",
+  "description": "Artwork progression for 'Beluga'",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kellymilligan/artwork-2020-01.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kellymilligan/artwork-2020-01/issues"
+  },
+  "homepage": "https://github.com/kellymilligan/artwork-2020-01#readme",
+  "dependencies": {
+    "canvas-sketch": "^0.7.3",
+    "canvas-sketch-util": "^1.10.0"
+  }
+}
