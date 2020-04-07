@@ -32,8 +32,8 @@ const sketch = () => {
 
     /* --- */
 
-    const COUNT = 1000
-    const RADIUS = width * 0.02
+    const COUNT = 20000
+    const RADIUS = width * 0.005
     const MAX_ATTEMPTS = COUNT * 2
 
     let currentCount = 1
@@ -64,18 +64,17 @@ const sketch = () => {
       }
 
       if ( failedAttempts >= MAX_ATTEMPTS ) {
-        console.log( 'Too many failed attempts.' )
+        console.log( 'Too many failed attempts. Stopped trying to add new points...' )
         break
       }
 
     } while ( currentCount < COUNT )
 
     const allPoints = otree.getAllPoints()
-    console.log( allPoints )
     for ( let i = 0; i < allPoints.length; i++ ) {
       const point = allPoints[ i ]
       context.save()
-      context.globalAlpha = 0.9
+      context.globalAlpha = 0.95
       context.globalCompositeOperation = 'darken'
       context.fillStyle = `rgb(${255 * (1 - point.z / depth)}, 0, ${255 * (point.z / depth)})`
       drawCircle( context, point.x, point.y, RADIUS )
