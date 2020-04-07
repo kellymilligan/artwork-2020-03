@@ -8,7 +8,7 @@ const Octree = require( './Octree' )
 /* Config */
 
 const settings = {
-  dimensions: [ 1024, 1024 ]
+  dimensions: [ 2048, 2048 ]
 }
 
 /* Toolbox */
@@ -50,9 +50,9 @@ const sketch = () => {
         depth * 0.1 + depth * 0.8 * random.value()
       )
 
-      newPoint.x += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0011 ) * width * 0.09
-      newPoint.y += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0018 ) * height * 0.07
-      newPoint.z += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0009 ) * depth * 0.05
+      newPoint.x += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0006 ) * width * 0.19
+      newPoint.y += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0009 ) * height * 0.07
+      newPoint.z += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0004 ) * depth * 0.05
 
       if ( !Box( width * 0.1, height * 0.1, depth * 0.1, width * 0.8, height * 0.8, depth * 0.8 ).contains( newPoint ) ) continue
 
