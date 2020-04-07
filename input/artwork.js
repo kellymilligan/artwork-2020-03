@@ -25,7 +25,7 @@ const sketch = () => {
   return ( { context, width, height } ) => {
 
     const depth = width
-    const otree = Octree( Box( width * 0.1, height * 0.1, depth * 0.1, width * 0.8, height * 0.8, depth * 0.8 ), 10 )
+    const otree = Octree( Box( 0, 0, 0, width, height, depth ), 10 )
 
     context.fillStyle = 'white'
     context.fillRect( 0, 0, width, height )
@@ -50,7 +50,11 @@ const sketch = () => {
         depth * 0.1 + depth * 0.8 * random.value()
       )
 
-      if ( !Box( 0, 0, 0, width, height, depth ).contains( newPoint ) ) continue
+      newPoint.x += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.009 ) * width * 0.09
+      newPoint.y += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.004 ) * height * 0.07
+      newPoint.z += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.007 ) * depth * 0.05
+
+      if ( !Box( width * 0.1, height * 0.1, depth * 0.1, width * 0.8, height * 0.8, depth * 0.8 ).contains( newPoint ) ) continue
 
       const queryVolume = Box( newPoint.x - RADIUS * 2, newPoint.y - RADIUS * 2, newPoint.z - RADIUS * 2, RADIUS * 4, RADIUS * 4, RADIUS * 4 )
       const collisions = otree.query( queryVolume )
