@@ -50,7 +50,7 @@ const sketch = () => {
         depth * 0.1 + depth * 0.8 * random.value()
       )
 
-      newPoint.x += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0006 ) * width * 0.19
+      newPoint.x += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0006 ) * width * 0.12
       newPoint.y += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0009 ) * height * 0.07
       newPoint.z += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0004 ) * depth * 0.05
 
