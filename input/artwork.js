@@ -32,8 +32,8 @@ const sketch = () => {
 
     /* --- */
 
-    const COUNT = 100000
-    const RADIUS = width * 0.0015
+    const COUNT = 200000
+    const RADIUS = width * 0.001
     const MAX_ATTEMPTS = COUNT * 2
 
     let currentCount = 1
