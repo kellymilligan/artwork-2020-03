@@ -19,12 +19,10 @@ const Quadtree = ( bounds, capacity = 10 ) => ({
     if ( !this.bounds.contains( point ) ) return false
 
     if ( this.points.length < this.capacity ) {
-
       this.points.push( point )
       return true
     }
     else {
-
       if ( !this.isDivided ) {
         this.subdivide()
       }
@@ -37,10 +35,14 @@ const Quadtree = ( bounds, capacity = 10 ) => ({
   },
   query( area, matched = [] ) {
 
-    if ( !this.bounds.intersects( area ) ) return
+    if ( !this.bounds.intersects( area ) ) return matched
 
-    for ( let point of this.points ) {
-      area.contains( point ) && matched.push( point )
+    for ( let i = 0, len = this.points.length; i < len; i++ ) {
+      const point = this.points[ i ]
+
+      if ( area.contains( point ) ) {
+        matched.push( point )
+      }
     }
 
     if ( this.isDivided ) {
@@ -52,14 +54,22 @@ const Quadtree = ( bounds, capacity = 10 ) => ({
 
     return matched
   },
+  getRandomPoint() {
+
+    const points = this.query( this.bounds, [] )
+    return points[ Math.floor( Math.random() * points.length ) ]
+  },
+  // Visualize on a CanvasRenderingContext2D
   visualize( ctx ) {
 
     ctx.save()
+
     ctx.strokeStyle = 'red'
     ctx.strokeRect( this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height )
-    for ( let p of this.points ) {
+    for ( let i = 0, len = this.points.length; i < len; i++ ) {
+      const point = this.points[ i ]
       ctx.fillStyle = 'blue'
-      ctx.fillRect( p.x - 2, p.y - 2, 4, 4 )
+      ctx.fillRect( point.x - 2, point.y - 2, 4, 4 )
     }
     if ( this.isDivided ) {
       this.nw.visualize( ctx )
@@ -67,12 +77,8 @@ const Quadtree = ( bounds, capacity = 10 ) => ({
       this.sw.visualize( ctx )
       this.se.visualize( ctx )
     }
-    ctx.restore()
-  },
-  getRandomPoint() {
 
-    const points = this.query( this.bounds, [] )
-    return points[ Math.floor( Math.random() * points.length ) ]
+    ctx.restore()
   }
 })
 

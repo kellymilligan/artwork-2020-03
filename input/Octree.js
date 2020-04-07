@@ -22,16 +22,13 @@ const Octree = ( bounds, capacity = 10 ) => ({
   },
   insert( point ) {
 
-    // console.log( this.bounds.contains( point ), point )
     if ( !this.bounds.contains( point ) ) return false
 
     if ( this.points.length < this.capacity ) {
-
       this.points.push( point )
       return true
     }
     else {
-
       if ( !this.isDivided ) {
         this.subdivide()
       }
@@ -47,10 +44,11 @@ const Octree = ( bounds, capacity = 10 ) => ({
     }
   },
   query( volume, matched = [] ) {
+    if ( !this.bounds.intersects( volume ) ) return matched
 
-    if ( !this.bounds.intersects( volume ) ) return
+    for ( let i = 0, len = this.points.length; i < len; i++ ) {
+      const point = this.points[ i ]
 
-    for ( let point of this.points ) {
       if ( volume.contains( point ) ) {
         matched.push( point )
       }
@@ -69,20 +67,31 @@ const Octree = ( bounds, capacity = 10 ) => ({
 
     return matched
   },
+  getAllPoints() {
+
+    return this.query( this.bounds, [] )
+  },
+  getRandomPoint() {
+
+    const points = this.query( this.bounds, [] )
+    return points[ Math.floor( Math.random() * points.length ) ]
+  },
+  // Visualize on a CanvasRenderingContext2D
   visualize( ctx ) {
 
     ctx.save()
 
-    ctx.lineWidth = 3
+    ctx.lineWidth = 6
     ctx.strokeStyle = '#f0f'
     ctx.strokeRect( this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height )
-    ctx.lineWidth = 1
+    ctx.lineWidth = 2
     ctx.strokeStyle = '#00f'
     ctx.strokeRect( this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height )
 
-    for ( let p of this.points ) {
+    for ( let i = 0, len = this.points.length; i < len; i++ ) {
+      const point = this.points[ i ]
       ctx.fillStyle = '#0f0'
-      ctx.fillRect( p.x - 2, p.y - 2, 4, 4 )
+      ctx.fillRect( point.x - 2, point.y - 2, 4, 4 )
     }
 
     if ( this.isDivided ) {
@@ -97,11 +106,6 @@ const Octree = ( bounds, capacity = 10 ) => ({
     }
 
     ctx.restore()
-  },
-  getRandomPoint() {
-
-    const points = this.query( this.bounds, [] )
-    return points[ Math.floor( Math.random() * points.length ) ]
   }
 })
 
