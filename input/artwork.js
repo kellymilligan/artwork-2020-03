@@ -106,10 +106,10 @@ const sketch = () => {
       drawCircle( context, point.x, point.y, width * 0.005 )
       context.fill()
     }
-    // const randomPoint = otree.getRandomPoint()
-    // context.fillStyle='#f0f'
-    // drawCircle( context, randomPoint.x, randomPoint.y, randomPoint.z, width * 0.005 )
-    // context.fill()
+    const randomPoint = otree.getRandomPoint()
+    context.fillStyle='#f0f'
+    drawCircle( context, randomPoint.x, randomPoint.y, width * 0.005 )
+    context.fill()
     context.restore()
 
   }
