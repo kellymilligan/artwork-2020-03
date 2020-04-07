@@ -32,8 +32,8 @@ const sketch = () => {
 
     /* --- */
 
-    const COUNT = 10000
-    const RADIUS = width * 0.005
+    const COUNT = 100000
+    const RADIUS = width * 0.0015
     const MAX_ATTEMPTS = COUNT * 2
 
     let currentCount = 1
@@ -50,9 +50,9 @@ const sketch = () => {
         depth * 0.1 + depth * 0.8 * random.value()
       )
 
-      newPoint.x += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.009 ) * width * 0.09
-      newPoint.y += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.004 ) * height * 0.07
-      newPoint.z += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.007 ) * depth * 0.05
+      newPoint.x += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0011 ) * width * 0.09
+      newPoint.y += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0018 ) * height * 0.07
+      newPoint.z += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0009 ) * depth * 0.05
 
       if ( !Box( width * 0.1, height * 0.1, depth * 0.1, width * 0.8, height * 0.8, depth * 0.8 ).contains( newPoint ) ) continue
 
