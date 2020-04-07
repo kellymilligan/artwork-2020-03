@@ -2,23 +2,16 @@ const canvasSketch = require( 'canvas-sketch' )
 const { random } = require( 'canvas-sketch-util' )
 
 const Vector = require( './Vector' )
-const Rectangle = require( './Rectangle' )
-const Quadtree = require( './Quadtree' )
+const Box = require( './Box' )
+const Octree = require( './Octree' )
 
 /* Config */
 
 const settings = {
-  dimensions: [ 2048, 2048 ]
+  dimensions: [ 1024, 1024 ]
 }
 
 /* Toolbox */
-
-const pointOnCircle = ( theta, x = 0, y = 0, radius = 1 ) => (
-  Vector(
-    x + radius * Math.cos( theta ),
-    y + radius * Math.sin( theta )
-  )
-)
 
 const drawCircle = ( ctx, x = 0, y = 0, r = 1 ) => {
   ctx.beginPath()
@@ -31,55 +24,57 @@ const drawCircle = ( ctx, x = 0, y = 0, r = 1 ) => {
 const sketch = () => {
   return ( { context, width, height } ) => {
 
-    const qtree = Quadtree( Rectangle( 0, 0, width, height ), 10 )
+    const depth = width
+    const otree = Octree( Box( width * 0.1, height * 0.1, depth * 0.1, width * 0.8, height * 0.8, depth * 0.8 ), 10 )
 
     context.fillStyle = 'white'
     context.fillRect( 0, 0, width, height )
 
     /* --- */
 
-    const COUNT = 50000
-    const RADIUS = width * 0.001
+    const COUNT = 11
+    const RADIUS = width * 0.01
     const MAX_ATTEMPTS = COUNT * 2
 
     let currentCount = 1
     let failedAttempts = 0
 
-    qtree.insert( Vector( width / 2, height / 2 ) )
+    const centerPoint = Vector( width / 2, height / 2, depth / 2 )
+    otree.insert( centerPoint )
 
     do {
 
       const newPoint = Vector(
-        /* width * 0.1 + 0.8 *  */width * random.value(),
-        /* height * 0.1 + 0.8 *  */height * random.value()
+        width * 0.1 + width * 0.8 * random.value(),
+        height * 0.1 + height * 0.8 * random.value(),
+        depth * 0.1 + depth * 0.8 * random.value()
       )
 
-      newPoint.x += random.noise2D( newPoint.x, newPoint.y, 0.0011 ) * width * 0.11
-      newPoint.y += random.noise2D( newPoint.x, newPoint.y, 0.0004 ) * height * 0.08
+      // console.log( newPoint )
 
-      if ( !Rectangle( width * 0.1, height * 0.1, width * 0.8, height * 0.8 ).contains( newPoint ) ) continue
+      // if ( !Box( 0, 0, 0, width, height, depth ).contains( newPoint ) ) continue
 
-      const queryRange = Rectangle( newPoint.x - RADIUS * 2, newPoint.y - RADIUS * 2, RADIUS * 4, RADIUS * 4 )
+      // const queryRange = Box( newPoint.x - RADIUS * 2, newPoint.y - RADIUS * 2, newPoint.z + RADIUS * 2, RADIUS * 4, RADIUS * 4, RADIUS * -4 )
 
       // context.save()
       // context.strokeStyle = 'red'
       // context.strokeRect( queryRange.x, queryRange.y, queryRange.width, queryRange.height )
       // context.restore()
 
-      const collisions = qtree.query( queryRange )
+      // const collisions = otree.query( queryRange )
 
-      if ( collisions.length ) {
-        failedAttempts += 1
-      }
-      else {
-        qtree.insert( newPoint )
+      // if ( collisions.length ) {
+      //   failedAttempts += 1
+      // }
+      // else {
+        otree.insert( newPoint )
         currentCount += 1
 
         // context.save()
         // context.strokeStyle = '#0f0'
         // context.strokeRect( queryRange.x, queryRange.y, queryRange.width, queryRange.height )
         // context.restore()
-      }
+      // }
 
       if ( failedAttempts >= MAX_ATTEMPTS ) {
         console.log( 'Too many failed attempts.' )
@@ -88,40 +83,34 @@ const sketch = () => {
 
     } while ( currentCount < COUNT )
 
-    const allPoints = qtree.query( Rectangle( 0, 0, width, height ) )
+    const allPoints = otree.query( Box( 0, 0, 0, width, height, depth ) )
     for ( let i = 0; i < allPoints.length; i++ ) {
       const point = allPoints[ i ]
       context.save()
-      context.fillStyle = `rgb(${
-        Math.round( 50 + 150 * ( random.noise2D( point.x, point.y, 0.0006 ) * 0.5 + 0.5 ) )
-      }, ${
-        Math.round( 50 * ( random.noise2D( point.x, point.y, 0.0003 ) * 0.5 + 0.5 ) )
-      }, ${
-        Math.round( 100 + 155 * ( 1 - ( random.noise2D( point.x, point.y, 0.0004 ) * 0.5 + 0.5 ) ) )
-      })`
-      // context.globalAlpha = 0.5
-      // context.globalCompositeOperation = 'multiply'
+      context.fillStyle = `rgb(${255 * (point.z / depth)}, 0, ${255 * (1 - point.z / depth)})`
       drawCircle( context, point.x, point.y, RADIUS )
       context.fill()
       context.restore()
     }
 
-    // qtree.visualize( context )
+    otree.visualize( context )
 
-    // const area = Rectangle( width * 0.15, width * 0.15, width * 0.3, width * 0.3 )
+    const searchVolume = Box( width * 0.25, width * 0.25, depth * 0.25, width * 0.33, width * 0.33, depth * 0.33 )
 
-    // context.save()
-    // context.strokeStyle = '#0f0'
-    // context.strokeRect( area.x, area.y, area.width, area.height )
-    // const points = qtree.query( area )
-    // for ( let point of points ) {
-    //   context.fillStyle = '#0ff'
-    //   context.fillRect( point.x - 3, point.y - 3, 6, 6 )
-    // }
-    // const randomPoint = qtree.getRandomPoint()
+    context.save()
+    context.strokeStyle = '#0f0'
+    context.strokeRect( searchVolume.x, searchVolume.y, searchVolume.width, searchVolume.height )
+    const points = otree.query( searchVolume )
+    for ( let point of points ) {
+      context.fillStyle = '#0ff'
+      drawCircle( context, point.x, point.y, width * 0.005 )
+      context.fill()
+    }
+    // const randomPoint = otree.getRandomPoint()
     // context.fillStyle='#f0f'
-    // context.fillRect( randomPoint.x - 10, randomPoint.y - 10, 20, 20 )
-    // context.restore()
+    // drawCircle( context, randomPoint.x, randomPoint.y, randomPoint.z, width * 0.005 )
+    // context.fill()
+    context.restore()
 
   }
 }
