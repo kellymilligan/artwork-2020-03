@@ -34,8 +34,8 @@ const sketch = () => {
 
     /* --- */
 
-    const COUNT = 1000000
-    const RADIUS = width * 0.0015
+    const COUNT = 500000
+    const RADIUS = width * 0.001
     const MAX_ATTEMPTS = COUNT
 
     let currentCount = 1
@@ -58,8 +58,13 @@ const sketch = () => {
 
       if ( !Box( width * 0.1, height * 0.1, depth * 0.1, width * 0.8, height * 0.8, depth * 0.8 ).contains( newPoint ) ) continue
 
+      // Box
       // const queryVolume = Box( newPoint.x - RADIUS * 2, newPoint.y - RADIUS * 2, newPoint.z - RADIUS * 2, RADIUS * 4, RADIUS * 4, RADIUS * 4 )
-      const queryVolume = Sphere( newPoint.x, newPoint.y, newPoint.z, RADIUS * 2 )
+      // Sphere
+      // const queryVolume = Sphere( newPoint.x, newPoint.y, newPoint.z, RADIUS * 2 )
+
+      const density = random.noise3D( newPoint.y, newPoint.x, newPoint.z, 0.0012 )
+      const queryVolume = Sphere( newPoint.x, newPoint.y, newPoint.z, RADIUS * 2 + RADIUS * 8 * ( density * 0.5 + 0.5 ) )
 
       const collisions = otree.query( queryVolume )
 
