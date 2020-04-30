@@ -1,8 +1,10 @@
 const canvasSketch = require( 'canvas-sketch' )
 const { random } = require( 'canvas-sketch-util' )
+random.setSeed( 0 /* random.getRandomSeed() */ )
 
 const Vector = require( './Vector' )
 const Box = require( './Box' )
+const Sphere = require( './Sphere' )
 const Octree = require( './Octree' )
 
 /* Config */
@@ -32,31 +34,34 @@ const sketch = () => {
 
     /* --- */
 
-    const COUNT = 100000
-    const RADIUS = width * 0.001
-    const MAX_ATTEMPTS = COUNT * 2
+    const COUNT = 1000
+    const RADIUS = width * 0.015
+    const MAX_ATTEMPTS = COUNT
 
     let currentCount = 1
     let failedAttempts = 0
 
-    const centerPoint = Vector( width / 2, height / 2, depth / 2 )
-    otree.insert( centerPoint )
+    // const centerPoint = Vector( width / 2, height / 2, depth / 2 )
+    // otree.insert( centerPoint )
 
     do {
 
       const newPoint = Vector(
         width * 0.1 + width * 0.8 * random.value(),
         height * 0.1 + height * 0.8 * random.value(),
-        depth * 0.1 + depth * 0.8 * random.value()
+        // depth * 0.1 + depth * 0.8 * random.value()
+        depth * 0.1
       )
 
       newPoint.x += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0006 ) * width * 0.12
-      newPoint.y += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0009 ) * height * 0.07
-      newPoint.z += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0004 ) * depth * 0.05
+      newPoint.y += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0009 ) * height * 0.17
+      // newPoint.z += random.noise3D( newPoint.x, newPoint.y, newPoint.z, 0.0004 ) * depth * 0.15
 
       if ( !Box( width * 0.1, height * 0.1, depth * 0.1, width * 0.8, height * 0.8, depth * 0.8 ).contains( newPoint ) ) continue
 
       const queryVolume = Box( newPoint.x - RADIUS * 2, newPoint.y - RADIUS * 2, newPoint.z - RADIUS * 2, RADIUS * 4, RADIUS * 4, RADIUS * 4 )
+      // const queryVolume = Sphere( newPoint.x, newPoint.y, newPoint.z, RADIUS * 2 )
+
       const collisions = otree.query( queryVolume )
 
       if ( collisions.length ) {
