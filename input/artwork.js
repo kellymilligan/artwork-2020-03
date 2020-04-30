@@ -35,7 +35,7 @@ const sketch = () => {
     /* --- */
 
     const COUNT = 10000
-    const RADIUS = width * 0.005
+    const RADIUS = width * 0.002
     const MAX_ATTEMPTS = COUNT
 
     let currentCount = 1
@@ -48,7 +48,7 @@ const sketch = () => {
 
       const newPoint = Vector(
         width * 0.1 + width * 0.8 * random.value(),
-        height * 0.1 + height * 0.8 * random.value(),
+        height * 0.5,// + height * 0.8 * random.value(),
         depth * 0.1 + depth * 0.8 * random.value()
         // depth * 0.1
       )
